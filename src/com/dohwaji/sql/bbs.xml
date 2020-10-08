@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Bbs">
+
+
+
+	<select id="listBbs_num" parameterType="String" resultType="bbsBean">
+		select BBS_NUM 
+		from Z_BBS  
+		where USER_ID = #{user_id}
+	</select>
+
+
+
+		
+	<!-- 분류 공지 목록-->
+	<select id="noticeBbs" resultType="bbsBean">
+	SELECT * FROM Z_BBS
+	WHERE bbs_maindiv='공지' OR bbs_smalldiv = '공지' ORDER BY bbs_date DESC
+	</select>
+
+	
+	<!-- 게시글 별점  저장-->
+	<update id="bbsStars" parameterType="bbsBean">
+		UPDATE Z_BBS 
+		SET 
+		avgPoint = #{avgPoint}, 
+		commentCount = ${commentCount}, 
+		avgValue = ${avgValue}
+		WHERE bbs_num = ${bbs_num}
+	</update>
+	
+
+
+	<!-- 게시글  삭제 -->
+	<delete id="deleteBbs" parameterType="_int">
+		DELETE FROM Z_BBS WHERE bbs_num = ${bbs_num}
+	</delete>
+	
+	
+	<!-- 회원탈퇴   게시글  전체 삭제 -->
+	<delete id="deleteMemberBbs" parameterType="String">
+		DELETE FROM Z_BBS WHERE user_id = ${user_id}
+	</delete>
+
+
+
+
+<!-- 게시글 수정 -->
+	<update id="updateBbs" parameterType="bbsBean">
+		UPDATE Z_BBS
+		SET  bbs_maindiv=#{bbs_maindiv}, bbs_smalldiv = #{bbs_smalldiv}, bbs_title = #{bbs_title}, bbs_explanation = #{bbs_explanation}
+		WHERE BBS_NUM = ${bbs_num}
+	</update>
+
+	
+
+
+<!-- (중요) 게시글 검색 필터 -->
+
+<!-- (대+소 분류, 제목 . 내용 . 글쓴이 , 조회순)  -->
+	<select id="divRead" parameterType="map" resultType="bbsBean">
+	  select @rownum:=@rownum+1 as no,
+		 zb.* from z_bbs zb 
+	 	 WHERE bbs_maindiv=#{bbs_maindiv} 
+		 AND bbs_smalldiv=#{bbs_smalldiv} 
+		 AND (BBS_TITLE LIKE CONCAT('%', #{bbs_title},'%') AND 
+			 bbs_explanation LIKE CONCAT('%', #{bbs_explanation},'%') AND 
+		 	 user_id LIKE CONCAT('%', #{user_id},'%'))  AND
+	 		 (@rownum:=0)=0 ORDER BY bbs_readcount DESC
+			  limit ${startRow}, 10
+	</select>
+	
+	<!-- (대+소 분류, ALL(제목+내용+글쓴이) , 조회순)  -->
+	<select id="divAllRead" parameterType="map" resultType="bbsBean">
+	  select @rownum:=@rownum+1 as no,
+		 zb.* from z_bbs zb 
+	 	 WHERE bbs_maindiv=#{bbs_maindiv} 
+		 AND bbs_smalldiv=#{bbs_smalldiv} 
+		 AND (BBS_TITLE LIKE CONCAT('%', #{bbs_title},'%') or 
+			 bbs_explanation LIKE CONCAT('%', #{bbs_explanation},'%') OR 
+		 	 user_id LIKE CONCAT('%', #{user_id},'%'))  AND
+	 		 (@rownum:=0)=0 ORDER BY bbs_readcount DESC
+			  limit ${startRow}, 10
+	</select>
+	
+	
+	
+	
+	
+	
+	<!-- (대+소 분류, 제목 . 내용 . 글쓴이 , 최신순)  -->
+	<select id="divLatest" parameterType="map" resultType="bbsBean">
+	  select @rownum:=@rownum+1 as no,
+		 zb.* from z_bbs zb 
+	 	 WHERE bbs_maindiv=#{bbs_maindiv} 
+		 AND bbs_smalldiv=#{bbs_smalldiv} 
+		 AND (BBS_TITLE LIKE CONCAT('%', #{bbs_title},'%') AND 
+			 bbs_explanation LIKE CONCAT('%', #{bbs_explanation},'%') AND 
+		 	 user_id LIKE CONCAT('%', #{user_id},'%'))  AND
+	 		 (@rownum:=0)=0 ORDER BY bbs_num DESC
+			  limit ${startRow}, 10
+	</select>
+	<!-- (대+소 분류, ALL(제목+내용+글쓴이) , 최신순)  -->
+	<select id="divAllLatest" parameterType="map" resultType="bbsBean">
+	  select @rownum:=@rownum+1 as no,
+		 zb.* from z_bbs zb 
+	 	 WHERE bbs_maindiv=#{bbs_maindiv} 
+		 AND bbs_smalldiv=#{bbs_smalldiv} 
+		 AND (BBS_TITLE LIKE CONCAT('%', #{bbs_title},'%') or 
+			 bbs_explanation LIKE CONCAT('%', #{bbs_explanation},'%') OR 
+		 	 user_id LIKE CONCAT('%', #{user_id},'%'))  AND
+	 		 (@rownum:=0)=0 ORDER BY bbs_num DESC
+			  limit ${startRow}, 10
+	</select>
+	
+	
+	
+	
+	
+	
+	<!-- (대+소 분류, 제목 . 내용 . 글쓴이 , 평점)  -->
+	<select id="divLikeCount" parameterType="map" resultType="bbsBean">
+	  select @rownum:=@rownum+1 as no,
+		 zb.* from z_bbs zb 
+	 	 WHERE 
+	 	  bbs_maindiv=#{bbs_maindiv} 
+		 AND bbs_smalldiv=#{bbs_smalldiv} 
+		 AND (BBS_TITLE LIKE CONCAT('%', #{bbs_title},'%') AND 
+			 bbs_explanation LIKE CONCAT('%', #{bbs_explanation},'%') AND 
+		 	 user_id LIKE CONCAT('%', #{user_id},'%'))  AND
+	 		 (@rownum:=0)=0 ORDER BY avgValue DESC
+			  limit ${startRow}, 10
+	</select>
+	
+	
+	<!-- (대+소 분류, ALL(제목+내용+글쓴이) , 평점)  -->
+	<select id="divAllLikeCount" parameterType="map" resultType="bbsBean">
+	  select @rownum:=@rownum+1 as no,
+		 zb.* from z_bbs zb 
+	 	 WHERE bbs_maindiv=#{bbs_maindiv} 
+		 AND bbs_smalldiv=#{bbs_smalldiv} 
+		 AND (BBS_TITLE LIKE CONCAT('%', #{bbs_title},'%') or 
+			 bbs_explanation LIKE CONCAT('%', #{bbs_explanation},'%') OR 
+		 	 user_id LIKE CONCAT('%', #{user_id},'%'))  AND
+	 		 (@rownum:=0)=0 ORDER BY avgValue DESC
+			  limit ${startRow},10
+	</select>
+
+
+
+
+
+
+
+
+
+<!-- 게시글 클릭시 조회수 +1 증가-->
+	<update id="readCount" parameterType="_int">
+		UPDATE Z_BBS
+		SET bbs_readcount = bbs_readcount + 1
+		WHERE BBS_NUM = ${bbs_num}
+	</update>
+
+<!-- 	해당 게시글 상세보기 -->
+	<select id="getBbsDetail" parameterType="_int" resultType="bbsBean">
+		SELECT * FROM Z_BBS WHERE BBS_NUM = ${bbs_num}
+	</select>
+	
+<!-- 내림차순으로 게시글 보기 -->
+	<select id="getBbsSeq" resultType="_int">
+		 SELECT max(bbs_num) from z_bbs
+	</select>
+
+<!-- 게시글 등록   -->
+	<insert id="insertBbs" parameterType="bbsBean">
+		INSERT INTO Z_BBS (
+			 user_id, bbs_maindiv, 
+			 bbs_smalldiv, bbs_title, 
+			 bbs_explanation, 
+			 bbs_likeCount, 
+			 bbs_likeCheck, 
+			 bbs_readcount, 
+			 bbs_date, 
+			 avgPoint, 
+			 commentCount, 
+			 avgValue
+		)   
+		VALUES(
+			#{user_id}, 
+			#{bbs_maindiv}, 
+			#{bbs_smalldiv}, 
+			#{bbs_title}, 
+			#{bbs_explanation}, 
+			#{bbs_likeCount}, 
+			0, 
+			0, 
+			NOW(),
+			#{avgPoint},
+			${commentCount},
+			${avgValue}
+		)
+	</insert>
+
+	<!-- 전체 게시글 수 -->
+	<select id="getBbsCnt" resultType="_int">
+		SELECT COUNT(bbs_maindiv) FROM Z_BBS
+	</select>
+	
+	
+	<!--  게시글  [이전] [다음] 10개씩   표시 -->
+	<select id="listAll" parameterType="map" resultType="bbsBean">
+	SELECT @ROWNUM:=@ROWNUM+1 AS RNUM,	
+	zb.* FROM z_bbs zb , 
+     (SELECT @ROWNUM := 0) TMP
+    	 WHERE 
+		 	BBS_TITLE LIKE CONCAT('%', #{bbs_title},'%') or 
+		 	bbs_explanation LIKE CONCAT('%', #{bbs_explanation},'%') OR 
+		 	user_id LIKE CONCAT('%', #{user_id},'%') ORDER BY bbs_num desc
+		 limit ${startRow}, 10;
+	</select>
+	
+	
+		<!--  게시글  [이전] [다음] 10개씩   표시 -->
+		<!--  main 구분  -->
+	<select id="listMainDivAll" parameterType="map" resultType="bbsBean">
+	  select @rownum:=@rownum+1 as no,
+		 zb.* from z_bbs zb 
+	 	 WHERE bbs_maindiv != '공지' AND
+		 	bbs_maindiv = #{bbs_maindiv} AND
+	 		(@rownum:=0)=0 ORDER BY bbs_num DESC
+			  limit ${startRow}, 10
+	</select>
+	
+	
+	
+
+	
+	
+	
+		<!-- 공지사항  갯수-->
+	<select id="noticeCnt" resultType="_int">
+		SELECT COUNT(*) FROM Z_BBS
+		WHERE bbs_maindiv='공지' OR bbs_smalldiv = '공지'
+	</select>
+	
+	
+		<!-- 구분 게시글 수 -->
+	<select id="getBbsMainDivCnt" parameterType="string" resultType="_int">
+		SELECT COUNT(*) FROM Z_BBS WHERE bbs_maindiv=#{bbs_maindiv}
+	</select>
+	
+	
+
+</mapper>
+
+
+
+
+
+

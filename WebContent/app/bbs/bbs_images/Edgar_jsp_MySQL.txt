@@ -1,0 +1,46 @@
+CREATE TABLE USER (
+ userID varchar(20),
+ userPassword varchar(64),
+ userEmail vachar(50),
+ userEmailHash varchar(64),
+ userEmailChecked boolean
+ )
+
+회원번호	user_num_ID	number	PK
+등급번호	admin_DIV_ID	number	FK
+아이디	user_ID	varchar2(30)	
+비밀번호	user_PW	varchar2(30)	
+비밀번호_new	user_newPW	varchar2(30)	
+이름	user_name	varchar2(30)	
+팔로우 수	user_subscribe	number	
+작성자이메일	user_email	varchar2(50)	
+이메일 인증 여부	user_email_cert	char(1)	
+회원 ip	user_IP	varchar2(50)	
+회원등록일	user_data	DATE	
+
+
+
+CREATE TABLE USERS (
+ user_num_id INT,
+ admin_DIV_ID INT,
+ user_email VARCHAR(50),
+ user_pw VARCHAR(30),
+ user_newpw VARCHAR(30),
+ user_name VARCHAR(30),
+ user_email_Hash VARCHAR(64),
+ user_email_cert boolean,
+ user_IP	VARCHAR(50),
+ user_data DATE
+);
+
+
+CREATE TABLE admin_DIV (
+admin_DIV_ID INT PK,
+admin_DIV_name varchar(50)
+);
+
+
+
+
+
+

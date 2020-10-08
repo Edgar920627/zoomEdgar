@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="BbsReply">
+
+
+
+	<select id="listReply_num" parameterType="String" resultType="bbsReplyBean">
+		select reply_num 
+		from Z_BBSReply  
+		where USER_ID = #{user_id}
+	</select>
+
+
+
+	<!-- 댓글 추천 카운터  -->
+	<update id="likeCnt" parameterType="bbsReplyBean">
+		UPDATE Z_BBSReply
+		SET reply_likeCnt = ${reply_likeCnt}
+		WHERE reply_num = ${reply_num}
+	</update>
+
+
+		<!-- 게시글   전체 추천 삭제  -->
+	<delete id="idReplydel" parameterType="String">
+		DELETE FROM Z_BBSReply WHERE user_id = #{user_id}
+	</delete>
+	
+	
+		<!-- 게시글   전체 추천 삭제  -->
+	<delete id="bbs_delete" parameterType="_int">
+		DELETE FROM z_replyLike WHERE bbs_num = ${bbs_num}
+	</delete>
+	
+	
+	
+	<!-- 댓글 추천 전체 삭제 -->
+	<delete id="replyLikeDel" parameterType="_int">
+		DELETE FROM z_replyLike WHERE reply_num = ${reply_num}
+	</delete>
+	
+	
+	
+	
+	<!-- 댓글 추천 삭제  -->
+	<delete id="reply_delete" parameterType="map">
+		delete from z_replyLike 
+		where reply_num = ${reply_num} and bbs_num = ${bbs_num}
+	</delete>
+	
+	
+	<!-- 동일 댓글 추천 여부 검색 -->
+	<select id="like_check" parameterType="map" resultType="_int">
+		select count(*) from z_replyLike 
+		where reply_num = ${reply_num} and login_ip = #{login_ip} and bbs_num = ${bbs_num}
+	</select>
+	
+	
+	<!-- 댓글 추천 -->  
+	<insert id="like_update" parameterType="map">
+		insert into z_replyLike (
+		reply_num, login_ip, bbs_num
+		)
+		 values(${reply_num}, #{login_ip}, ${bbs_num})
+	</insert>
+ 
+	<!-- 댓글 추천 취소  -->
+	<delete id="like_delete" parameterType="map">
+		delete from z_replyLike 
+		where reply_num = ${reply_num} and login_ip = #{login_ip} and bbs_num = ${bbs_num}
+	</delete>
+
+		<!-- 댓글 추천수 -->
+	<select id="like_count" parameterType="int" resultType="_int">
+		select count(*) from z_replyLike where reply_num = ${reply_num}
+	</select>
+	
+
+			<!--    [이전] [다음] 10개씩   + 댓글 리스트 + 평점순   -->
+	<select id="replyStarList" parameterType="map" resultType="bbsReplyBean">
+   select @rownum:=@rownum+1 as num, 
+  			Reply_num       	Reply_num  
+			,bbs_num      		bbs_num  
+			,user_id            user_id      
+			,reply_write      	reply_write
+			,reply_point      	reply_point
+			,reply_date      	reply_date 
+			,CASE WHEN reply_point = 1 THEN '★☆☆☆☆'
+			      WHEN reply_point = 2 THEN '★★☆☆☆'
+			      WHEN reply_point = 3 THEN '★★★☆☆'
+			      WHEN reply_point = 4 THEN '★★★★☆'
+			      WHEN reply_point = 5 THEN '★★★★★'
+			      ELSE '☆☆☆☆☆'
+			 END                reply_stars
+	FROM z_bbsreply zb 
+  	WHERE bbs_num = ${bbs_num} and 
+  	(@rownum:=0)=0 ORDER BY reply_point DESC
+  	  limit ${startRow}, 10
+	</select>
+	
+	
+	
+	
+		<!--    [이전] [다음] 10개씩   + 댓글 리스트 + 추천순   -->
+	<select id="replyLikeCntList" parameterType="map" resultType="bbsReplyBean">
+   select @rownum:=@rownum+1 as num, 
+  			Reply_num       	Reply_num  
+			,bbs_num      		bbs_num  
+			,user_id            user_id      
+			,reply_write      	reply_write
+			,reply_point      	reply_point
+			,reply_date      	reply_date 
+			,CASE WHEN reply_point = 1 THEN '★☆☆☆☆'
+			      WHEN reply_point = 2 THEN '★★☆☆☆'
+			      WHEN reply_point = 3 THEN '★★★☆☆'
+			      WHEN reply_point = 4 THEN '★★★★☆'
+			      WHEN reply_point = 5 THEN '★★★★★'
+			      ELSE '☆☆☆☆☆'
+			 END                reply_stars
+	FROM z_bbsreply zb 
+  	WHERE bbs_num = ${bbs_num} and 
+  	(@rownum:=0)=0 ORDER BY reply_likeCnt DESC
+  	  limit ${startRow}, 10
+	</select>
+	
+
+
+	<!--    [이전] [다음] 10개씩   + 댓글 리스트 + 최신순   -->
+	<select id="getBbsReplyList" parameterType="map" resultType="bbsReplyBean">
+  select @rownum:=@rownum+1 as num, 
+  			Reply_num       	Reply_num  
+			,bbs_num      		bbs_num  
+			,user_id            user_id      
+			,reply_write      	reply_write
+			,reply_point      	reply_point
+			,reply_date      	reply_date 
+			,CASE WHEN reply_point = 1 THEN '★☆☆☆☆'
+			      WHEN reply_point = 2 THEN '★★☆☆☆'
+			      WHEN reply_point = 3 THEN '★★★☆☆'
+			      WHEN reply_point = 4 THEN '★★★★☆'
+			      WHEN reply_point = 5 THEN '★★★★★'
+			      ELSE '☆☆☆☆☆'
+			 END                reply_stars
+	FROM z_bbsreply zb 
+  	WHERE bbs_num = ${bbs_num} and 
+  	(@rownum:=0)=0 ORDER BY reply_num DESC
+  	  limit ${startRow}, 10
+	</select>
+	
+
+		<!-- 게시글 댓글 1개 삭제 -->
+	<delete id="deleteOneReply" parameterType="_int">
+		DELETE FROM Z_BBSReply WHERE reply_num = ${reply_num}
+	</delete>
+	
+	
+	
+	<!-- 게시글 댓글 전체 삭제 -->
+	<delete id="deleteReply" parameterType="_int">
+		DELETE FROM Z_BBSReply WHERE bbs_num = ${bbs_num}
+	</delete>
+	
+
+	
+	<!-- 댓글 카운터 -->
+	<select id="getBbsReplyCnt" parameterType="_int" resultType="_int">
+		SELECT COUNT(*) FROM Z_BBSReply WHERE bbs_num = ${bbs_num}
+	</select>
+	
+	
+	
+	<!-- 1 별점 카운터  ~ -->
+	<select id="starZeroCnt" parameterType="_int" resultType="_int">
+		SELECT COUNT(*) FROM Z_BBSReply WHERE bbs_num = ${bbs_num} AND reply_point = 0
+	</select>
+	
+	<select id="starOneCnt" parameterType="_int" resultType="_int">
+		SELECT COUNT(*) FROM Z_BBSReply WHERE bbs_num = ${bbs_num} AND reply_point = 1
+	</select>
+	
+	<select id="starTwoCnt" parameterType="_int" resultType="_int">
+		SELECT COUNT(*) FROM Z_BBSReply WHERE bbs_num = ${bbs_num} AND reply_point = 2
+	</select>
+	
+	<select id="starThreeCnt" parameterType="_int" resultType="_int">
+		SELECT COUNT(*) FROM Z_BBSReply WHERE bbs_num = ${bbs_num} AND reply_point = 3
+	</select>
+	
+	<select id="starFourCnt" parameterType="_int" resultType="_int">
+		SELECT COUNT(*) FROM Z_BBSReply WHERE bbs_num = ${bbs_num} AND reply_point = 4
+	</select>
+	
+	<select id="starFiveCnt" parameterType="_int" resultType="_int">
+		SELECT COUNT(*) FROM Z_BBSReply WHERE bbs_num = ${bbs_num} AND reply_point = 5
+	</select>
+	<!-- ~ 5별점 카운터 -->
+
+
+	
+	
+	
+	<!-- 댓글 등록 -->
+	<insert id="insertBbsReply" parameterType="bbsReplyBean">
+		INSERT INTO z_bbsReply (
+		bbs_num, 
+		user_id, 
+		reply_write, 
+		reply_point, 
+		reply_likeCnt, 
+		reply_hateCnt, 
+		reply_likeCheck, 
+		reply_date, 
+		reply_stars
+		)
+		VALUES(
+		 ${bbs_num}
+		, #{user_id}
+		, #{reply_write}
+		, ${reply_point}
+		, ${reply_likeCnt}
+		, ${reply_hateCnt}
+		, 0
+		, NOW()
+		, #{reply_stars}
+		)
+	</insert>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+

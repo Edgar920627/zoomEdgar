@@ -1,0 +1,51 @@
+{
+	"folders": {},
+	"connections": {
+		"oracle_thin-1743e101548-359cca7b8ea89947": {
+			"provider": "oracle",
+			"driver": "oracle_thin",
+			"name": "Oracle - XE 2",
+			"save-password": true,
+			"read-only": false,
+			"configuration": {
+				"port": "1521",
+				"database": "XE",
+				"url": "jdbc:oracle:thin:@//:1521/XE",
+				"home": "C:\\oraclexe\\app\\oracle\\product\\11.2.0\\server",
+				"type": "dev",
+				"provider-properties": {
+					"@dbeaver-always-use-dba-views@": "false",
+					"@dbeaver-sid-service@": "SERVICE",
+					"@dbeaver-meta-use-simple-constraints@": "false",
+					"@dbeaver-use-rule-hint@": "false",
+					"@dbeaver-use-meta-optimizer@": "false",
+					"@dbeaver-connection-type@": "BASIC",
+					"@dbeaver-check-schema-content@": "false",
+					"@dbeaver-meta-use-sys-schema@": "false",
+					"@dbeaver-always-show-dba@": "false"
+				}
+			}
+		}
+	},
+	"virtual-models": {
+		"oracle_thin-1743e101548-359cca7b8ea89947": {
+			"HR2": {
+				"@properties": {
+					"erd.diagram.state": {
+						"serialized": "<diagram version=\"1\" name=\"HR2\" time=\"202010061600\"><entities><data-source id=\"oracle_thin-1743e101548-359cca7b8ea89947\"><entity id=\"1\" name=\"Z_BBS\" fq-name=\"HR2.Z_BBS\" order=\"0\" x=\"647\" y=\"351\"><path name=\"HR2\"/></entity><entity id=\"2\" name=\"Z_BBSREPLY\" fq-name=\"HR2.Z_BBSREPLY\" order=\"1\" x=\"342\" y=\"265\"><path name=\"HR2\"/></entity><entity id=\"3\" name=\"Z_BBS_FILES\" fq-name=\"HR2.Z_BBS_FILES\" order=\"2\" x=\"929\" y=\"672\"><path name=\"HR2\"/></entity><entity id=\"4\" name=\"Z_LOGIN\" fq-name=\"HR2.Z_LOGIN\" order=\"3\" x=\"931\" y=\"24\"><path name=\"HR2\"/></entity><entity id=\"5\" name=\"Z_MEMBER\" fq-name=\"HR2.Z_MEMBER\" order=\"4\" x=\"633\" y=\"15\"><path name=\"HR2\"/></entity><entity id=\"6\" name=\"Z_REPLYLIKE\" fq-name=\"HR2.Z_REPLYLIKE\" order=\"5\" x=\"356\" y=\"594\"><path name=\"HR2\"/></entity><entity id=\"7\" name=\"Z_REPORT\" fq-name=\"HR2.Z_REPORT\" order=\"6\" x=\"923\" y=\"279\"><path name=\"HR2\"/></entity></data-source></entities><relations><relation name=\"BBSNUMFK\" fq-name=\"HR2.Z_BBSREPLY.BBSNUMFK\" type=\"fk\" pk-ref=\"1\" fk-ref=\"2\"/><relation name=\"BBS_NUM_FK\" fq-name=\"HR2.Z_BBS_FILES.BBS_NUM_FK\" type=\"fk\" pk-ref=\"1\" fk-ref=\"3\"/><relation name=\"Z_FK2\" fq-name=\"HR2.Z_REPLYLIKE.Z_FK2\" type=\"fk\" pk-ref=\"1\" fk-ref=\"6\"/><relation name=\"Z_FK\" fq-name=\"HR2.Z_REPLYLIKE.Z_FK\" type=\"fk\" pk-ref=\"2\" fk-ref=\"6\"/><relation name=\"SUER\" fq-name=\"HR2.Z_BBS.SUER\" type=\"fk\" pk-ref=\"5\" fk-ref=\"1\"/><relation name=\"USERID_FK\" fq-name=\"HR2.Z_BBSREPLY.USERID_FK\" type=\"fk\" pk-ref=\"5\" fk-ref=\"2\"/><relation name=\"Z_LOGIN_FK\" fq-name=\"HR2.Z_LOGIN.Z_LOGIN_FK\" type=\"fk\" pk-ref=\"5\" fk-ref=\"4\"/></relations></diagram>"
+					}
+				}
+			}
+		}
+	},
+	"connection-types": {
+		"dev": {
+			"name": "Development",
+			"color": "255,255,255",
+			"description": "Regular development database",
+			"auto-commit": true,
+			"confirm-execute": false,
+			"confirm-data-change": false
+		}
+	}
+}
